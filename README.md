@@ -12,7 +12,7 @@ ES modules do not work from `file://`, so serve the folder:
 With empty Supabase settings the game runs in **local mode**: accounts, progress and the
 personal leaderboard are saved in this browser (localStorage; password stored as a salted SHA-256 hash).
 
-## 2. Switch to Supabase (when you have your project)
+## 2. Switch to Supabase 
 1. Supabase dashboard > **SQL Editor** > paste `supabase/schema.sql` > Run (creates 3 tables + Row Level Security).
 2. **Authentication > Providers > Email**: turn **OFF "Confirm email"** (players log in with a username, not a real email).
 3. **Project Settings > API**: copy the *Project URL* and the *anon public* key.
