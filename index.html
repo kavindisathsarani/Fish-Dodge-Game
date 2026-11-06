@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fish Dodge: Count to Survive</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%90%9F%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/hud.css">
+</head>
+<body>
+<!-- Reusable drawings (fish, rock, kelp, heart) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd0ff"/><stop offset="1" stop-color="#1b62d6"/></linearGradient>
+<symbol id="fish" viewBox="-4 0 128 80"><path d="M34 40 L2 14 Q12 40 2 66 Z" fill="#1b62d6"/><path d="M50 14 Q68 -2 86 14 Z" fill="#1b62d6"/><ellipse cx="68" cy="40" rx="48" ry="30" fill="url(#fg)"/><path d="M30 46 Q68 78 112 48 Q70 62 30 46Z" fill="#d9f1ff" opacity=".8"/><circle cx="92" cy="34" r="11" fill="#fff"/><circle cx="95" cy="35" r="5.5" fill="#12284a"/><circle cx="97" cy="32" r="2" fill="#fff"/><path d="M98 52 Q106 58 113 49" fill="none" stroke="#12284a" stroke-width="3" stroke-linecap="round"/><circle cx="80" cy="50" r="5" fill="#ff9fb2" opacity=".7"/></symbol>
+<symbol id="rock" viewBox="0 0 60 56"><path d="M3 51 Q-1 30 13 18 Q23 4 38 8 Q57 14 57 36 Q59 50 51 52Z" fill="#7c8895"/><path d="M13 18 Q23 4 38 8 Q48 11 52 22 Q36 14 24 24Z" fill="#a6b2bd"/><path d="M3 51 Q30 42 57 40 Q59 50 51 52Z" fill="#5d6874"/></symbol>
+<symbol id="plant" viewBox="0 0 40 100"><path d="M20 100 Q4 70 16 40 Q22 20 12 2 Q34 24 26 52 Q18 76 28 100Z" fill="#2fa84f"/><path d="M8 100 Q0 80 6 62 Q10 80 18 100Z" fill="#46c86a"/><path d="M26 100 Q40 82 34 56 Q30 82 20 100Z" fill="#46c86a"/></symbol>
+<symbol id="heart" viewBox="0 0 24 22"><path d="M12 21 C-6 9 3 -3 12 5 C21 -3 30 9 12 21Z" fill="#ff4d6d" stroke="#fff" stroke-width="1.2"/></symbol>
+</defs></svg>
+
+<!-- 1 Login -->
+<section id="login" class="screen"><div class="stack">
+  <h1 class="title">Fish Dodge:<small>Count to Survive</small></h1>
+  <svg class="fish-big"><use href="#fish"/></svg>
+  <form id="login-form" class="card">
+    <input id="l-user" placeholder="Username" autocomplete="username" required>
+    <input id="l-pass" type="password" placeholder="Password" autocomplete="current-password" required>
+    <p class="okmsg" id="l-ok"></p>
+    <p class="err" id="l-err"></p>
+    <button class="btn primary">Login</button>
+    <button type="button" class="btn ghost" data-action="goRegister">Register</button>
+    <button type="button" class="linkbtn" data-action="goRegister">New here? Create an account</button>
+  </form>
+</div></section>
+
+<!-- 2 Registration -->
+<section id="register" class="screen"><div class="stack">
+  <h2>Create Account</h2>
+  <form id="register-form" class="card" novalidate>
+    <input id="r-user" placeholder="Username" autocomplete="username" maxlength="16">
+    <ul class="hints" id="r-user-h"></ul>
+    <input id="r-pass" type="password" placeholder="Password" autocomplete="new-password">
+    <ul class="hints" id="r-pass-h"></ul>
+    <input id="r-pass2" type="password" placeholder="Confirm password" autocomplete="new-password">
+    <ul class="hints" id="r-pass2-h"></ul>
+    <p class="err" id="r-err"></p>
+    <button class="btn primary">Create Account</button>
+    <button type="button" class="btn ghost" data-action="goLogin">Back to Login</button>
+  </form>
+</div></section>
+
+<!-- 3 Main menu -->
+<section id="menu" class="screen">
+  <div class="topbar"><span class="pill" id="m-welcome">Welcome!</span><span style="display:flex;gap:8px"><button class="btn ghost" data-action="account">Account</button><button class="btn ghost" data-action="logout">Log out</button></span></div>
+  <div class="stack">
+    <h1 class="title">Fish Dodge:<small>Count to Survive</small></h1>
+    <svg class="fish-big" style="width:150px;height:100px"><use href="#fish"/></svg>
+    <button class="btn green" data-action="play">Play</button>
+    <button class="btn primary" data-action="howto">How to Play</button>
+    <button class="btn primary" data-action="leaderboard">Leaderboard</button>
+    <div class="stats"><div class="stat">Current Level<b id="m-level">1/20</b></div><div class="stat">Best Score<b id="m-best">0</b></div><div class="stat">Games Played<b id="m-games">0</b></div></div>
+  </div>
+</section>
+
+<!-- 4 Leaderboard (personal) -->
+<section id="leaderboard" class="screen"><div class="stack wide">
+  <h2>Leaderboard</h2><div class="lab" style="color:#fff">Your personal best runs</div>
+  <div class="stats"><div class="stat">Best Score<b id="lb-best">0</b></div><div class="stat">Highest Level<b id="lb-level">0/20</b></div><div class="stat">Games Played<b id="lb-games">0</b></div></div>
+  <div class="card" style="overflow-x:auto"><table><thead><tr><th>Rank</th><th>Date</th><th>Level reached</th><th>Score</th></tr></thead><tbody id="lb-body"></tbody></table></div>
+  <div class="row"><button class="btn green" data-action="play">Play</button><button class="btn ghost" data-action="menu">Back to Menu</button></div>
+</div></section>
+
+<!-- 5 How to play -->
+<section id="howto" class="screen"><div class="stack">
+  <h2>How to Play</h2>
+  <div class="card">
+    <div class="item"><div><span class="k">↑</span><span class="k">↓</span></div><div><b>Move the fish.</b> Use the arrow keys (or W / S) to swim up and down.</div></div>
+    <div class="item"><svg viewBox="0 0 60 56"><use href="#rock"/></svg><div><b>Avoid the rocks.</b> Swim through the gaps to reach the finish line.</div></div>
+    <div class="item"><svg viewBox="0 0 24 22"><use href="#heart"/></svg><div><b>Watch your lives.</b> A rock costs 1 of 3 lives and sends you back to your last safe spot.</div></div>
+    <div class="item"><svg viewBox="-4 0 128 80"><use href="#fish"/></svg><div><b>Fish Count mini-game.</b> Lose all 3 lives? Count the fish correctly to restart the level with full lives.</div></div>
+  </div>
+  <button class="btn green" data-action="howtoBack">Got it!</button>
+</div></section>
+
+<!-- Account (change password / delete account) -->
+<section id="account" class="screen"><div class="stack">
+  <h2>My Account</h2>
+  <div class="card"><div class="lab">Signed in as</div><div class="big" id="a-user" style="font-size:1.6rem">player</div><div class="lab" style="font-size:.8rem">Your username is your login name, so it cannot be changed.</div></div>
+  <form id="pw-form" class="card" novalidate>
+    <b>Change password</b>
+    <input id="a-cur" type="password" placeholder="Current password" autocomplete="current-password">
+    <input id="a-new" type="password" placeholder="New password" autocomplete="new-password">
+    <ul class="hints" id="a-new-h"></ul>
+    <input id="a-new2" type="password" placeholder="Confirm new password" autocomplete="new-password">
+    <ul class="hints" id="a-new2-h"></ul>
+    <p class="err" id="a-err"></p>
+    <button class="btn primary">Update Password</button>
+  </form>
+  <div class="card danger"><b>Delete account</b>
+    <div style="font-size:.9rem">This permanently deletes your account, progress and leaderboard. Type DELETE to confirm.</div>
+    <input id="a-del" placeholder="Type DELETE" autocomplete="off"><p class="err" id="a-del-err"></p>
+    <button class="btn danger-btn" data-action="deleteAccount">Delete my account</button></div>
+  <button class="btn ghost" data-action="menu">Back to Menu</button>
+</div></section>
+
+<!-- 6-8 Gameplay (one reusable screen) + pause + out-of-lives overlays -->
+<section id="game" class="screen">
+  <div class="hud">
+    <div class="pill" id="hud-level">Level 1/20</div>
+    <div class="bar"><i id="hud-bar"></i><b id="hud-pct">0%</b></div>
+    <div class="hearts" id="hud-hearts"></div>
+    <div class="pill" id="hud-score">Score: 0</div>
+    <button class="iconbtn" data-action="pause" aria-label="Pause">❚❚</button>
+  </div>
+  <div class="play">
+    <canvas id="canvas"></canvas>
+    <div class="touchpad"><button id="btn-up" aria-label="Move up">▲</button><button id="btn-down" aria-label="Move down">▼</button></div>
+    <div class="overlay" id="pause-overlay"><div class="card">
+      <h3>Paused</h3>
+      <button class="btn green" data-action="resume">Resume</button>
+      <button class="btn primary" data-action="restart">Restart Level</button>
+      <button class="btn primary" data-action="howtoPause">How to Play</button>
+      <button class="btn primary" data-action="toMenu">Main Menu</button>
+      <button class="btn ghost" data-action="quit">Quit to Login</button>
+    </div></div>
+    <div class="overlay" id="ol-overlay"><div class="card">
+      <h3>Out of Lives!</h3>
+      <div class="hearts" id="ol-hearts"></div>
+      <div class="lab">Don't give up! Count the fish to get all 3 lives back and retry the level.</div>
+      <button class="btn orange" data-action="countfish">Count the Fish!</button>
+    </div></div>
+  </div>
+  <div class="rotate">Tip: turn your phone sideways for a bigger play area.</div>
+  <div class="controls"><span class="k">↑</span><span class="k">↓</span><span>Use the arrow keys (or W / S) to move the fish &nbsp;·&nbsp; Esc / P = pause</span></div>
+</section>
+
+<!-- 9 Fish count mini-game -->
+<section id="fishcount" class="screen"><div class="stack wide">
+  <div class="row" style="align-items:center;justify-content:space-between"><h2>Count the Fish!</h2><span class="pillred" id="fc-timer" style="flex:none">60s</span></div>
+  <div class="card">
+    <div style="font-weight:600">How many fish do you see?</div>
+    <div class="ph"><span id="fc-msg">Loading picture…</span><img id="fc-img" alt="Count the fish in this picture" hidden></div>
+    <div class="row"><input id="fc-input" type="number" min="0" inputmode="numeric" placeholder="Enter the number of fish"><button class="btn primary" id="fc-submit" style="flex:none;width:auto;padding:12px 26px">Submit</button></div>
+    <button class="btn ghost" id="fc-reload" hidden>Reload picture</button>
+    <div class="row" style="justify-content:space-between;background:#e3f2fb;padding:8px 12px;border-radius:10px;font-weight:600"><span id="fc-attempt">Challenge 1</span><span id="fc-score">Score: 0</span></div>
+  </div>
+</div></section>
+
+<!-- 10-12 Fish count feedback -->
+<section id="correct" class="screen"><div class="stack">
+  <h2>Correct!</h2>
+  <div class="card"><div class="lab">Points earned</div><div class="big">⭐ +50</div><div class="lab">Lives restored!</div><div class="hearts" id="co-hearts"></div></div>
+  <svg class="fish-big" style="width:150px;height:100px"><use href="#fish"/></svg>
+  <button class="btn green" data-action="restartAfterCorrect">Restart Level</button>
+  <div style="font-size:.9rem">The level restarts from the beginning with 3 lives</div>
+</div></section>
+<section id="incorrect" class="screen"><div class="stack">
+  <h2>Not Quite!</h2>
+  <div class="card"><div class="lab">That's not the right number. A new picture is coming.</div><div class="lab">Your lives</div><div class="hearts" id="in-hearts"></div></div>
+  <button class="btn orange" data-action="tryAgain">Try Again</button>
+</div></section>
+<section id="timeout" class="screen"><div class="stack">
+  <h2>Time's Up!</h2>
+  <div class="card"><div class="lab">You ran out of time. Try again with a new picture.</div><div class="lab">Your lives</div><div class="hearts" id="to-hearts"></div></div>
+  <button class="btn orange" data-action="tryAgain">Try Again</button>
+</div></section>
+
+<!-- 13 Level complete -->
+<section id="levelcomplete" class="screen"><div class="stack">
+  <h2>Level Complete!</h2>
+  <div class="card"><div class="lab">Level</div><div class="big" style="color:var(--ink)" id="lc-level">1/20</div><div class="lab">Score earned</div><div class="big" id="lc-score">⭐ +0</div></div>
+  <svg class="fish-big"><use href="#fish"/></svg>
+  <button class="btn primary" style="border:3px solid #fff" data-action="nextLevel">Next Level</button>
+  <button class="btn ghost" data-action="toMenu">Main Menu</button>
+</div></section>
+
+<!-- 16 Game completed -->
+<section id="gamecomplete" class="screen"><div class="stack">
+  <h2>Game Completed!</h2>
+  <div class="card" style="align-items:center"><div style="font-size:3rem">🏆</div><div class="lab">Final Score</div><div class="big" id="gc-score">⭐ 0</div><div class="lab">Highest Level Completed</div><div class="big" style="color:var(--ink)">20/20</div></div>
+  <button class="btn green" data-action="playAgain">Play Again</button>
+  <button class="btn primary" data-action="toMenu">Main Menu</button>
+  <button class="btn ghost" data-action="logout">Back to Login</button>
+</div></section>
+
+<div id="toast"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

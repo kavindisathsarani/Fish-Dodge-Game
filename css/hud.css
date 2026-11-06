@@ -1,0 +1,33 @@
+/* css/hud.css - gameplay screen: HUD bar, canvas frame, overlays, controls bar */
+#game{flex-direction:column;justify-content:flex-start;gap:10px;padding:12px;background:#0a4f9c}
+.hud{width:min(100%,1100px);display:flex;gap:10px;align-items:center}
+.hud .pill{white-space:nowrap}
+.bar{flex:1;height:26px;background:#0b4b86;border:2px solid rgba(255,255,255,.4);border-radius:14px;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(#7cf0a8,#2fc46a)}
+.bar b{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.8rem}
+.hud .hearts svg{width:28px;height:26px}
+.iconbtn{background:#0b4b86;border:2px solid rgba(255,255,255,.4);border-radius:12px;color:#fff;font:700 1rem inherit;padding:4px 12px;cursor:pointer}
+.play{position:relative;width:min(100%,calc((100vh - 150px)*16/9));max-width:1100px}
+#canvas{width:100%;display:block;aspect-ratio:16/9;border-radius:16px;border:3px solid rgba(255,255,255,.5)}
+.overlay{position:absolute;inset:0;display:none;place-items:center;background:rgba(4,30,70,.55);border-radius:16px;z-index:5}
+.overlay.on{display:grid}
+.overlay .card{width:min(86%,340px);align-items:center;text-align:center}
+.overlay h3{margin:0;font-size:1.8rem;color:var(--blue)}
+.controls{width:min(100%,1100px);background:rgba(7,35,75,.9);border-radius:12px;padding:8px 14px;display:flex;gap:10px;align-items:center;font-size:.95rem}
+.controls .k{background:#fff;color:#0b4b86}
+
+/* ---- phone / tablet: touch buttons, compact HUD ---- */
+.touchpad{display:none}
+.rotate{display:none;font-size:.85rem;text-align:center;opacity:.9}
+@media (orientation:portrait) and (max-width:700px){.rotate{display:block}}
+@media (pointer:coarse){
+  .touchpad{display:flex;position:absolute;left:10px;right:10px;bottom:10px;justify-content:space-between;pointer-events:none;z-index:4}
+  .touchpad button{pointer-events:auto;width:68px;height:68px;border-radius:50%;border:3px solid rgba(255,255,255,.85);background:rgba(11,75,134,.65);color:#fff;font-size:1.6rem;touch-action:none;user-select:none;-webkit-user-select:none}
+  .controls{display:none}
+  .play{width:min(100%,calc((100dvh - 100px)*16/9))}
+}
+@media (max-width:700px){
+  #game{padding:8px}
+  .hud{flex-wrap:wrap;gap:6px}.hud .pill{padding:4px 10px;font-size:.8rem}
+  .bar{order:5;flex-basis:100%;height:20px}.hud .hearts svg{width:22px;height:20px}
+}
